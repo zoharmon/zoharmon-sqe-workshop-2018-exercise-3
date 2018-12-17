@@ -1,24 +1,20 @@
 import $ from 'jquery';
-import {parseCode, recordsTable, setCodeToParse} from './code-analyzer';
+import {getSymbolic, parseCode, setCodeToParse, setArguments} from './code-analyzer';
 import {dataTypeParser} from './code-analyzer';
 
 $(document).ready(function () {
     $('#codeSubmissionButton').click(() => {
         let stringUser = $('#codePlaceholder').val();
+        let stringUserVector = $('#codePlaceholderArguments').val();
+        setArguments(stringUserVector);
         setCodeToParse(stringUser);
         let parsedCode = parseCode(stringUser);
         dataTypeParser(parsedCode.body);
-        let row = '';
-        for(let i = 0; i<recordsTable.length; i++){
-            row += '<tr>';
-            row += '<td>'+ recordsTable[i].line + '</td>';
-            row += '<td>'+ recordsTable[i].type + '</td>';
-            row += '<td>'+ recordsTable[i].name + '</td>';
-            row += '<td>'+ recordsTable[i].condition + '</td>';
-            row += '<td>'+ recordsTable[i].value + '</td>';
-            row += '</tr>';
+        let arr = getSymbolic().split('\n');
+        let out = '';
+        for(let i=0;i<arr.length;i++){
+            out += '<p> '+arr[i]+ '</p>';
         }
-        $('#parsedCode').val(JSON.stringify(parsedCode, null, 2));
-        $('#parseTable').append(row);
+        $('#output').html(out);
     });
 });
